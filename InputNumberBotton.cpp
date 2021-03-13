@@ -22,3 +22,7 @@ const RectF& InputNumberButton::rect() const{
 const String& InputNumberButton::label() const{
 	return m_label;
 }
+
+void InputNumberButton::update(){
+	m_transition.update(m_rect.leftPressed());
+}

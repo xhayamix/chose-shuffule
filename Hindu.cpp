@@ -28,6 +28,10 @@ void Hindu::update(){
 	Print << U"X: " << Cursor::Pos().x; // X 座標だけを表示
 
 	Print << U"Y: " << Cursor::Pos().y; // Y 座標だけを表示
+	for (auto& button : buttons)
+	{
+		button.update();
+	}
 
 }
 

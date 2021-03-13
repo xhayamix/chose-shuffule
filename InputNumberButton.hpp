@@ -17,4 +17,5 @@ class InputNumberButton {
 			const ColorF& colorFrame = ColorF(0.9, 0.92, 0.94)) const;
 		const RectF& rect() const;
 		const String& label() const;
+		void update();
 };
