@@ -1,5 +1,6 @@
 #pragma once
 #include "Common.hpp"
+#include "InputNumberButton.hpp"
 #include <HamFramework.hpp>
 #include <random>
 #include <fstream>
@@ -9,6 +10,7 @@ class Hindu : public MyApp::Scene
 private:
 	const PlayingCard::Pack pack = PlayingCard::Pack(69, Palette::Red);
 	Array<PlayingCard::Card> cards;
+	Array<InputNumberButton> buttons;
 
 public:
 
