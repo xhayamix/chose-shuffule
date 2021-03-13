@@ -2,22 +2,14 @@
 
 
 Hindu::Hindu(const InitData& init) : IScene(init){
-	for (int i = 1; i <= 10; i++) {
-		for (int j = 0; j < 3; j++) {
-			cards.push_back(PlayingCard::Card(PlayingCard::Suit::Spade, i));
-		}
-	}
-	for (int i = 1; i <= 10; i++) {
-		for (int j = 0; j < 3; j++) {
-			cards.push_back(PlayingCard::Card(PlayingCard::Suit::Diamond, i));
-		}
-	}
+	setCards();
 	const String str = U"0123456789";
 	for (int i = 0; i < 10; i++) {
 		buttons.emplace_back(String(1, str[i]), i, Rect(43*(i+1)+i*80, 550, 80, 60));
 	}
-	buttons.emplace_back(U"10", 10, Rect(43 * (4 + 1) + 4 * 80 + 160+43, 652, 80, 60));
-	buttons.emplace_back(U"OK", 11, Rect(43 * (4 + 1) + 4 * 80 + 240 + 43, 652, 80, 60));
+	buttons.emplace_back(U"10", 10, Rect(43 * (4 + 1) + 4 * 80 + 160 + 43 + 5, 652, 80, 60));
+	buttons.emplace_back(U"OK", 11, Rect(43 * (4 + 1) + 4 * 80 + 240 + 43 + 10, 652, 80, 60));
+	buttons.emplace_back(U"reset", 12, Rect(43 * (4 + 1) + 4 * 80 + 320 + 43 + 15, 652, 180, 60));
 	
 
 }
@@ -29,6 +21,10 @@ void Hindu::update(){
 			int num = button.value;
 			if (num == 11) {
 				cards = shuffle(cards,Parse<int>(text));
+				break;
+			}
+			if (num == 12) {
+				setCards();
 				break;
 			}
 			if (num == 10) {
@@ -97,6 +93,17 @@ Array<PlayingCard::Card> Hindu::shuffle(Array<PlayingCard::Card> cards, int roop
 	return afterCards;
 }
 
-Array<PlayingCard::Card> Hindu::setCards() {
+void Hindu::setCards() {
+	cards.clear();
+	for (int i = 1; i <= 10; i++) {
+		for (int j = 0; j < 3; j++) {
+			cards.push_back(PlayingCard::Card(PlayingCard::Suit::Spade, i));
+		}
+	}
+	for (int i = 1; i <= 10; i++) {
+		for (int j = 0; j < 3; j++) {
+			cards.push_back(PlayingCard::Card(PlayingCard::Suit::Diamond, i));
+		}
+	}
 
 }
