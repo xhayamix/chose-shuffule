@@ -2,7 +2,8 @@
 #include <Siv3D.hpp>
 enum class State
 {
-	Title
+	Title,
+	Hindu
 };
 
 struct CommonData
