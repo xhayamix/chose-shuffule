@@ -1,13 +1,11 @@
 #pragma once
 #include <Siv3D.hpp>
-enum class State
-{
+enum class State{
 	Title,
 	Hindu
 };
 
-struct CommonData
-{
+struct CommonData{
 
 };
 

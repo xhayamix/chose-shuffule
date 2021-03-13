@@ -6,8 +6,7 @@
 #include "Hindu.hpp"
 
 
-void Main()
-{
+void Main(){
     Scene::SetBackground(ColorF(0.8, 0.9, 1.0));
     Window::Resize(1280, 720);
 	MyApp manager;
@@ -17,11 +16,10 @@ void Main()
 		.init(State::Title);
 	FontAsset::Register(U"Title", 70, Typeface::Regular);
 	FontAsset::Register(U"Menu", 30, Typeface::Regular);
+	FontAsset::Register(U"Number", 40, Typeface::Bold);
 
-	while (System::Update())
-	{
-		if (!manager.update())
-		{
+	while (System::Update()){
+		if (!manager.update()){
 			break;
 		}
 	}

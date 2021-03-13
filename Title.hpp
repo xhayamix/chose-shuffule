@@ -16,5 +16,4 @@ class Title : public MyApp::Scene {
         void update() override;
         void draw() const override;
 
-
 };

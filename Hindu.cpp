@@ -12,11 +12,22 @@ Hindu::Hindu(const InitData& init) : IScene(init){
 			cards.push_back(PlayingCard::Card(PlayingCard::Suit::Diamond, i));
 		}
 	}
+	const String str = U"0123456789";
+	for (int i = 0; i < 10; i++) {
+		buttons.emplace_back(String(1, str[i]), i, Rect(43*(i+1)+i*80, 550, 80, 60));
+	}
+	
 
 }
 
 void Hindu::update(){
-	
+	ClearPrint();
+
+	Print << Cursor::Pos(); // 現在のマウスカーソル座標を表示
+
+	Print << U"X: " << Cursor::Pos().x; // X 座標だけを表示
+
+	Print << U"Y: " << Cursor::Pos().y; // Y 座標だけを表示
 
 }
 
@@ -25,7 +36,11 @@ void Hindu::draw() const{
 		const Vec2 center(15 + i % 15 * (pack.width() + 15), 15 + (i / 15) * (pack.height() + 15));
 		pack(cards[i]).draw(center);
 	}
-
+	
+	for (const auto& button : buttons){
+		button.draw();
+		FontAsset(U"Number")(button.label()).drawAt(button.rect().center(), ColorF(0.2, 0.4, 0.6));
+	}
 }
 
 void Hindu::shuffle(int roop) {

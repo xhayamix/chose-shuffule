@@ -20,6 +20,4 @@ public:
 	void shuffle(int roop);
 	std::random_device seed_gen;
 	std::default_random_engine engine = std::default_random_engine(seed_gen());
-
-
 };

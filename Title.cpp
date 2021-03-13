@@ -1,8 +1,7 @@
 #pragma once
 # include "Title.hpp"
 
-Title::Title(const InitData& init) : IScene(init)
-{
+Title::Title(const InitData& init) : IScene(init){
 
 }
 
@@ -10,18 +9,15 @@ void Title::update() {
     m_startTransition.update(m_startButton.mouseOver());
     m_exitTransition.update(m_exitButton.mouseOver());
 
-    if (m_startButton.mouseOver() || m_exitButton.mouseOver())
-    {
+    if (m_startButton.mouseOver() || m_exitButton.mouseOver()){
         Cursor::RequestStyle(CursorStyle::Hand);
     }
 
-    if (m_startButton.leftClicked())
-    {
+    if (m_startButton.leftClicked()){
         changeScene(State::Hindu);
     }
 
-    if (m_exitButton.leftClicked())
-    {
+    if (m_exitButton.leftClicked()){
         System::Exit();
     }
 
@@ -38,8 +34,5 @@ void Title::draw() const {
 
     FontAsset(U"Menu")(U"ヒンズーシャッフル").drawAt(m_startButton.center(), ColorF(0.25));
     FontAsset(U"Menu")(U"ファローシャッフル").drawAt(m_exitButton.center(), ColorF(0.25));
-
-
-
 
 }
