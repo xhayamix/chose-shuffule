@@ -17,7 +17,7 @@ void Title::update() {
 
     if (m_startButton.leftClicked())
     {
-        //changeScene(State::Game);
+        changeScene(State::Hindu);
     }
 
     if (m_exitButton.leftClicked())
