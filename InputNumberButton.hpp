@@ -6,7 +6,7 @@ class InputNumberButton {
 		RectF m_rect;
 
 		String m_label;
-		int value;
+		
 		Transition m_transition = Transition(0.0s, 0.5s);
 
 	public:
@@ -18,4 +18,5 @@ class InputNumberButton {
 		const RectF& rect() const;
 		const String& label() const;
 		void update();
+		int value;
 };

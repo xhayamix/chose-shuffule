@@ -17,21 +17,29 @@ Hindu::Hindu(const InitData& init) : IScene(init){
 		buttons.emplace_back(String(1, str[i]), i, Rect(43*(i+1)+i*80, 550, 80, 60));
 	}
 	
+	
 
 }
 
 void Hindu::update(){
-	ClearPrint();
-
-	Print << Cursor::Pos(); // 現在のマウスカーソル座標を表示
-
-	Print << U"X: " << Cursor::Pos().x; // X 座標だけを表示
-
-	Print << U"Y: " << Cursor::Pos().y; // Y 座標だけを表示
-	for (auto& button : buttons)
-	{
+	for (auto& button : buttons){
 		button.update();
+		if (button.rect().leftClicked()) {
+			int num = button.value;
+			if (num == 10) {
+				if (text) {
+					text.pop_back();
+				} 
+			} else if (text.size() < 3) {
+				if (num != 0 || text.size() != 0) {
+					String s = Format(num);
+					text.insert(text.size(), s);
+				}
+				
+			}
+		}
 	}
+	
 
 }
 
@@ -45,6 +53,10 @@ void Hindu::draw() const{
 		button.draw();
 		FontAsset(U"Number")(button.label()).drawAt(button.rect().center(), ColorF(0.2, 0.4, 0.6));
 	}
+	Rect displayRect(43 * (4 + 1) + 4 * 80, 652, 203, 60);
+	displayRect.stretched(-1).draw();
+	FontAsset(U"Number")(text).draw(Arg::rightCenter = displayRect.rightCenter().movedBy(-15, 0), ColorF(0.25));
+
 }
 
 void Hindu::shuffle(int roop) {
