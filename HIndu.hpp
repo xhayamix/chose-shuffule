@@ -20,7 +20,9 @@ public:
 	Hindu(const InitData& init);
 	void update() override;
 	void draw() const override;
-	void shuffle(int roop);
+	Array<PlayingCard::Card> shuffle(Array<PlayingCard::Card> cards, int roop = 0);
 	std::random_device seed_gen;
 	std::default_random_engine engine = std::default_random_engine(seed_gen());
+	Array<PlayingCard::Card> setCards();
+
 };

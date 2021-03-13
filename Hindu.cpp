@@ -16,7 +16,8 @@ Hindu::Hindu(const InitData& init) : IScene(init){
 	for (int i = 0; i < 10; i++) {
 		buttons.emplace_back(String(1, str[i]), i, Rect(43*(i+1)+i*80, 550, 80, 60));
 	}
-	
+	buttons.emplace_back(U"10", 10, Rect(43 * (4 + 1) + 4 * 80 + 160+43, 652, 80, 60));
+	buttons.emplace_back(U"OK", 11, Rect(43 * (4 + 1) + 4 * 80 + 240 + 43, 652, 80, 60));
 	
 
 }
@@ -26,6 +27,10 @@ void Hindu::update(){
 		button.update();
 		if (button.rect().leftClicked()) {
 			int num = button.value;
+			if (num == 11) {
+				cards = shuffle(cards,Parse<int>(text));
+				break;
+			}
 			if (num == 10) {
 				if (text) {
 					text.pop_back();
@@ -51,7 +56,13 @@ void Hindu::draw() const{
 	
 	for (const auto& button : buttons){
 		button.draw();
-		FontAsset(U"Number")(button.label()).drawAt(button.rect().center(), ColorF(0.2, 0.4, 0.6));
+		if (button.value == 10) {
+			Triangle(button.rect().center(), 48, -90_deg).movedBy(2, 0).draw(ColorF(0.2, 0.4, 0.6));
+			Shape2D::Cross(9.5, 3.6, button.rect().center().movedBy(2, 0)).draw(ColorF(0.9, 0.92, 0.94));
+		} else {
+			FontAsset(U"Number")(button.label()).drawAt(button.rect().center(), ColorF(0.2, 0.4, 0.6));
+		}
+		
 	}
 	Rect displayRect(43 * (4 + 1) + 4 * 80, 652, 203, 60);
 	displayRect.stretched(-1).draw();
@@ -59,7 +70,7 @@ void Hindu::draw() const{
 
 }
 
-void Hindu::shuffle(int roop) {
+Array<PlayingCard::Card> Hindu::shuffle(Array<PlayingCard::Card> cards, int roop) {
 	int count;
 	int now;
 	std::normal_distribution<> dist(10, 5/3);
@@ -83,5 +94,9 @@ void Hindu::shuffle(int roop) {
 			now += stack;
 		}
 	}
+	return afterCards;
+}
+
+Array<PlayingCard::Card> Hindu::setCards() {
 
 }
