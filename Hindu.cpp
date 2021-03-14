@@ -10,6 +10,11 @@ Hindu::Hindu(const InitData& init) : IScene(init){
 	buttons.emplace_back(U"10", 10, Rect(43 * (4 + 1) + 4 * 80 + 160 + 43 + 5, 652, 80, 60));
 	buttons.emplace_back(U"OK", 11, Rect(43 * (4 + 1) + 4 * 80 + 240 + 43 + 10, 652, 80, 60));
 	buttons.emplace_back(U"reset", 12, Rect(43 * (4 + 1) + 4 * 80 + 320 + 43 + 15, 652, 180, 60));
+
+	for (int i = 0; i < 60; i++) {
+		RectF rect(15 + i % 15 * (pack.width() + 15), 15 + (i / 15) * (pack.height() + 15), 69, 111.64435);
+		rects.push_back(rect);
+	}
 	
 
 }
@@ -40,13 +45,23 @@ void Hindu::update(){
 			}
 		}
 	}
-	
-
+	for (int i = 0; i < rects.size(); i++) {
+		if (rects[i].leftClicked()) {
+			savei = i;
+			break;
+		} else if (rects[i].mouseOver() && MouseL.up()) {
+			PlayingCard::Card card = cards[i];
+			cards[i] = cards[savei];
+			cards[savei] = card;
+			break;
+		}
+	}
 }
 
 void Hindu::draw() const{
 	for (int i = 0; i < 60; i++) {
 		const Vec2 center(15 + i % 15 * (pack.width() + 15), 15 + (i / 15) * (pack.height() + 15));
+		
 		pack(cards[i]).draw(center);
 	}
 	

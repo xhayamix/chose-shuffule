@@ -12,8 +12,10 @@ private:
 	const PlayingCard::Pack pack = PlayingCard::Pack(69, Palette::Red);
 	Array<PlayingCard::Card> cards;
 	Array<InputNumberButton> buttons;
+	Array<RectF> rects;
 	int roop;
 	String text;
+	int savei;
 
 public:
 
