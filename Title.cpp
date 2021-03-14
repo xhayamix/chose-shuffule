@@ -18,7 +18,7 @@ void Title::update() {
     }
 
     if (m_exitButton.leftClicked()){
-        System::Exit();
+        changeScene(State::Farrow);
     }
 
 }

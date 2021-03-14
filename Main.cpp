@@ -4,6 +4,7 @@
 #include "Common.hpp"
 #include "Title.hpp"
 #include "Hindu.hpp"
+#include "Farrow.hpp"
 
 
 void Main(){
@@ -13,6 +14,7 @@ void Main(){
 	manager
 		.add<Title>(State::Title)
 		.add<Hindu>(State::Hindu)
+		.add<Farrow>(State::Farrow)
 		.init(State::Title);
 	FontAsset::Register(U"Title", 70, Typeface::Regular);
 	FontAsset::Register(U"Menu", 30, Typeface::Regular);
