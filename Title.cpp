@@ -22,7 +22,9 @@ void Title::update() {
     if (m_exitButton.leftClicked()){
         changeScene(State::Farrow, 0.3s);
     }
-
+    if (m_gameButton.leftClicked()) {
+        changeScene(State::SetGame, 0.3s);
+    }
 }
 
 void Title::draw() const {

@@ -5,6 +5,7 @@
 #include "Title.hpp"
 #include "Hindu.hpp"
 #include "Farrow.hpp"
+#include "SetGame.hpp"
 
 
 void Main(){
@@ -15,6 +16,7 @@ void Main(){
 		.add<Title>(State::Title)
 		.add<Hindu>(State::Hindu)
 		.add<Farrow>(State::Farrow)
+		.add<SetGame>(State::SetGame)
 		.init(State::Title);
 	FontAsset::Register(U"Title", 70, Typeface::Regular);
 	FontAsset::Register(U"Menu", 30, Typeface::Regular);

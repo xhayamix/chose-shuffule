@@ -3,7 +3,8 @@
 enum class State{
 	Title,
 	Hindu,
-	Farrow
+	Farrow,
+	SetGame
 };
 
 struct CommonData{
