@@ -63,7 +63,7 @@ void Hindu::update(){
 	}
 
 	if (MouseR.pressed()) {//title‚É–ß‚é
-		changeScene(State::Title);
+		changeScene(State::Title, 0.3s);
 	}
 }
 

@@ -14,11 +14,11 @@ void Title::update() {
     }
 
     if (m_startButton.leftClicked()){
-        changeScene(State::Hindu);
+        changeScene(State::Hindu, 0.3s);
     }
 
     if (m_exitButton.leftClicked()){
-        changeScene(State::Farrow);
+        changeScene(State::Farrow, 0.3s);
     }
 
 }
