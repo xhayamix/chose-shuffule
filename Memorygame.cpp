@@ -1,7 +1,7 @@
-#include "SetGame.hpp"
+#include "Memorygame.hpp"
 
 
-SetGame::SetGame(const InitData& init) : IScene(init) {
+Memorygame::Memorygame(const InitData& init) : IScene(init) {
 	setCards();
 	const String str = U"0123456789";
 	for (int i = 0; i < 10; i++) {
@@ -9,28 +9,25 @@ SetGame::SetGame(const InitData& init) : IScene(init) {
 	}
 
 	buttons.emplace_back(U"10", 10, Rect(43 * (4 + 1) + 4 * 80 + 160 + 43 + 5, 652, 80, 60)); // 43はボタンの間の長さ
-	buttons.emplace_back(U"start", 11, Rect(43 * (4 + 1) + 4 * 80 + 240 + 43 + 10, 652, 180, 60));
-	buttons.emplace_back(U"reset", 12, Rect(43 * (4 + 1) + 4 * 80 + 420 + 43 + 15, 652, 180, 60));
+	buttons.emplace_back(U"OK", 11, Rect(43 * (4 + 1) + 4 * 80 + 240 + 43 + 10, 652, 80, 60));
+	buttons.emplace_back(U"reset", 12, Rect(43 * (4 + 1) + 4 * 80 + 320 + 43 + 15, 652, 180, 60));
 
 	for (int i = 0; i < 60; i++) {
 		RectF rect(15 + i % 15 * (pack.width() + 15), 15 + (i / 15) * (pack.height() + 15), 69, 111.64435);
 		rects.push_back(rect);
 	}
 
-
 }
 
-void SetGame::update() {
-	SimpleGUI::RadioButtons(index0, { U"ヒンズーシャッフル", U"ファローシャッフル"}, Vec2(100, 630));
+void Memorygame::update() {
 	for (auto& button : buttons) {//数字ボタンの判定
 		button.update();
 		if (button.rect().leftClicked()) {
 			int num = button.value;
 			if (num == 11) {
 				if (text.size() > 0) {
-					getData().cards = cards;
-					getData().roop = Parse<int>(text);
-					getData().shuffleKind = index0;
+					cards = shuffle(cards, Parse<int>(text));
+
 				}
 				break;
 			}
@@ -70,10 +67,9 @@ void SetGame::update() {
 	if (MouseR.pressed()) {//titleに戻る
 		changeScene(State::Title, 0.3s);
 	}
-	
 }
 
-void SetGame::draw() const {
+void Memorygame::draw() const {
 	for (int i = 0; i < 60; i++) {//カードの描画
 		const Vec2 center(15 + i % 15 * (pack.width() + 15), 15 + (i / 15) * (pack.height() + 15));
 		pack(cards[i]).draw(center);
@@ -94,11 +90,59 @@ void SetGame::draw() const {
 	Rect displayRect(43 * (4 + 1) + 4 * 80, 652, 203, 60);//数字の表示
 	displayRect.stretched(-1).draw();
 	FontAsset(U"Number")(text).draw(Arg::rightCenter = displayRect.rightCenter().movedBy(-15, 0), ColorF(0.25));
-	
 
 }
 
-void SetGame::setCards() {//カードの初期セット
+Array<PlayingCard::Card> Memorygame::shuffle(Array<PlayingCard::Card> cards, int roop) {//シャッフル
+	int acount;
+	int bcount;
+	int now;
+	Array<PlayingCard::Card> afterCards = cards.slice(0);
+	std::binomial_distribution<> dist(cards.size(), 0.5);
+	for (int j = 0; j < roop; j++) {
+		now = cards.size();
+		int div = dist(engine);
+		Array<PlayingCard::Card> a;
+		Array<PlayingCard::Card> b;
+		for (int i = 0; i < div; i++) {
+			a.push_back(afterCards[i]);
+		}
+		for (int i = 0; i < cards.size() - div; i++) {
+			b.push_back(afterCards[i + div]);
+		}
+		acount = div;
+		bcount = cards.size() - div;
+
+		while (acount > 0 || bcount > 0) {
+			if (acount == 0) {
+				for (int i = 0; i < bcount; i++) {
+					afterCards[i] = b[i];
+				}
+				break;
+			}
+			if (bcount == 0) {
+				for (int i = 0; i < acount; i++) {
+					afterCards[i] = a[i];
+				}
+				break;
+			}
+			double x = acount / (double)(acount + bcount);
+			if (x >= Random(0.0, 1.0)) {
+				afterCards[now - 1] = a[acount - 1];
+				now--;
+				acount--;
+			}
+			else {
+				afterCards[now - 1] = b[bcount - 1];
+				now--;
+				bcount--;
+			}
+		}
+	}
+	return afterCards;
+}
+
+void Memorygame::setCards() {//カードの初期セット
 	cards.clear();
 	for (int i = 1; i <= 10; i++) {
 		for (int j = 0; j < 3; j++) {

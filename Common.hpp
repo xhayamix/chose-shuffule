@@ -4,10 +4,14 @@ enum class State{
 	Title,
 	Hindu,
 	Farrow,
-	SetGame
+	SetGame,
+	Memorygame
 };
 
 struct CommonData{
+	Array<PlayingCard::Card> cards;
+	int roop = 0;
+	int shuffleKind = 0;
 
 };
 
