@@ -17,7 +17,6 @@ SetGame::SetGame(const InitData& init) : IScene(init) {
 		rects.push_back(rect);
 	}
 
-
 }
 
 void SetGame::update() {
@@ -28,9 +27,17 @@ void SetGame::update() {
 			int num = button.value;
 			if (num == 11) {
 				if (text.size() > 0) {
-					getData().cards = cards;
+					for (int i = 0; i < 60; i++) {//カード配置の確認
+						int j = 0;
+						if (cards[i].isDiamond()) {
+							j = 1;
+						}
+						cardData << Vec2(cards[i].rank, j);
+					}
+					getData().cards = cardData;
 					getData().roop = Parse<int>(text);
 					getData().shuffleKind = index0;
+					changeScene(State::Memorygame, 0.3s);
 				}
 				break;
 			}

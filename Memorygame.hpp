@@ -15,14 +15,19 @@ private:
 	Array<RectF> rects;
 	int roop;
 	String text;
-	int savei;
+	int savei[2];
+	bool gameResult[60];
+	Array<Vec2> cardData;
+	int count = 0;
+	int time = 0;
 
 public:
 
 	Memorygame(const InitData& init);
 	void update() override;
 	void draw() const override;
-	Array<PlayingCard::Card> shuffle(Array<PlayingCard::Card> cards, int roop = 0);
+	Array<PlayingCard::Card> hinduShuffle(Array<PlayingCard::Card> cards, int roop = 0);
+	Array<PlayingCard::Card> farrowShuffle(Array<PlayingCard::Card> cards, int roop = 0);
 	std::random_device seed_gen;
 	std::default_random_engine engine = std::default_random_engine(seed_gen());
 	//Array<PlayingCard::Card> setCards();

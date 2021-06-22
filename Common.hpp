@@ -9,7 +9,7 @@ enum class State{
 };
 
 struct CommonData{
-	Array<PlayingCard::Card> cards;
+	Array<Vec2> cards;
 	int roop = 0;
 	int shuffleKind = 0;
 

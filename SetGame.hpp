@@ -14,6 +14,7 @@ private:
 	Array<InputNumberButton> buttons;
 	String text;
 	int savei;
+	Array<Vec2> cardData;
 
 public:
 
