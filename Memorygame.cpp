@@ -18,11 +18,11 @@ Memorygame::Memorygame(const InitData& init) : IScene(init) {
 }
 
 void Memorygame::update() {
-	if (count == 2) {//count2の状態でdrowを呼び出すことで間違った場合でも2枚とも表示することができるようにしたが、ごり押し実装なのでもう少し改善したい
+	if (count == 3) {//count2の状態でdrowを呼び出すことで間違った場合でも2枚とも表示することができるようにしたが、ごり押し実装なのでもう少し改善したい
 		count++;
 	}
 	for (int i = 0; i < rects.size(); i++) {//クリックしたカードを表に向ける
-		if (rects[i].leftClicked() && gameResult[i] && count < 2) {
+		if (rects[i].leftClicked() && gameResult[i] && count < 3) {
 			savei[count] = i;
 			gameResult[i] = false;
 			cards[i].flip();
@@ -31,17 +31,19 @@ void Memorygame::update() {
 		}
 	}
 	
-	if (count == 3) {
+	if (count == 4) {
 		
-		if (cards[savei[0]].rank == cards[savei[1]].rank) {//カードが一緒かどうか
+		if (cards[savei[0]].rank == cards[savei[1]].rank && cards[savei[0]].rank == cards[savei[2]].rank) {//カードが一緒かどうか
 			
 		} else {
 			
 			gameResult[savei[0]] = true;
 			gameResult[savei[1]] = true;
+			gameResult[savei[2]] = true;
 			System::Sleep(2000);//カード表示時間
 			cards[savei[0]].flip();
 			cards[savei[1]].flip();
+			cards[savei[2]].flip();
 
 		}
 		count = 0;

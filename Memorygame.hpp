@@ -15,7 +15,7 @@ private:
 	Array<RectF> rects;
 	int roop;
 	String text;
-	int savei[2];
+	int savei[3];
 	bool gameResult[60];
 	Array<Vec2> cardData;
 	int count = 0;
