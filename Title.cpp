@@ -28,7 +28,7 @@ void Title::update() {
 }
 
 void Title::draw() const {
-    const String titleText = U"エキサイティングなシャッフル";
+    const String titleText = U"Exciting Shuffling";
     const Vec2 center(Scene::Center().x, 120);
     FontAsset(U"Title")(titleText).drawAt(center.movedBy(4, 6), ColorF(0.0, 0.5));
     FontAsset(U"Title")(titleText).drawAt(center);
@@ -37,8 +37,8 @@ void Title::draw() const {
     m_exitButton.draw(ColorF(1.0, m_exitTransition.value())).drawFrame(2);
     m_gameButton.draw(ColorF(1.0, m_gameTransition.value())).drawFrame(2);
 
-    FontAsset(U"Menu")(U"ヒンズーシャッフル").drawAt(m_startButton.center(), ColorF(0.25));
-    FontAsset(U"Menu")(U"ファローシャッフル").drawAt(m_exitButton.center(), ColorF(0.25));
-    FontAsset(U"Menu")(U"神経衰弱").drawAt(m_gameButton.center(), ColorF(0.25));
+    FontAsset(U"Menu")(U"Hindu Shuffle").drawAt(m_startButton.center(), ColorF(0.25));
+    FontAsset(U"Menu")(U"Farrow Shuffle").drawAt(m_exitButton.center(), ColorF(0.25));
+    FontAsset(U"Menu")(U"Memory Game").drawAt(m_gameButton.center(), ColorF(0.25));
 
 }

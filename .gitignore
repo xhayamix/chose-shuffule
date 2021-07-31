@@ -136,3 +136,6 @@ cardgame.vcxproj.user
 cardgame.vcxproj.filters
 cardgame.vcxproj
 cardgame.sln
+.vs/cardgame/v16/ipch/AutoPCH/156bc8bae946eeeb/MEMORYGAME.ipch
+.vs/cardgame/v16/ipch/AutoPCH/61ae3bbb13fd84ce/MEMORYGAME.ipch
+Intermediate/cardgame/Debug/Intermediate/Memorygame.obj

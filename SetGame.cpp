@@ -20,7 +20,7 @@ SetGame::SetGame(const InitData& init) : IScene(init) {
 }
 
 void SetGame::update() {
-	SimpleGUI::RadioButtons(index0, { U"ヒンズーシャッフル", U"ファローシャッフル"}, Vec2(100, 630));
+	SimpleGUI::RadioButtons(index0, { U"Hindu Shuffle", U"Farrow Shuffle"}, Vec2(100, 630));
 	for (auto& button : buttons) {//数字ボタンの判定
 		button.update();
 		if (button.rect().leftClicked()) {
