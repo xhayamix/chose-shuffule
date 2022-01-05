@@ -7,6 +7,7 @@
 #include "Farrow.hpp"
 #include "SetGame.hpp"
 #include "Memorygame.hpp"
+#include "Plot.hpp"
 
 
 void Main(){
@@ -19,6 +20,7 @@ void Main(){
 		.add<Farrow>(State::Farrow)
 		.add<SetGame>(State::SetGame)
 		.add<Memorygame>(State::Memorygame)
+		.add<Plot>(State::Plot)
 		.init(State::Title);
 	FontAsset::Register(U"Title", 70, Typeface::Regular);
 	FontAsset::Register(U"Menu", 30, Typeface::Regular);

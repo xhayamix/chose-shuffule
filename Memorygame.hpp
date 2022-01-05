@@ -18,7 +18,7 @@ private:
 	int savei[3];
 	bool gameResult[60];
 	Array<Vec2> cardData;
-	int count = 0;
+	int count = 0;//開いているカードのカウント
 	int time = 0;
 
 public:

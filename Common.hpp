@@ -5,7 +5,8 @@ enum class State{
 	Hindu,
 	Farrow,
 	SetGame,
-	Memorygame
+	Memorygame,
+	Plot
 };
 
 struct CommonData{
