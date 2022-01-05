@@ -52,6 +52,10 @@ void Plot::update() {
 		}
 	}
 
+	if (MouseR.pressed()) {//title‚É–ß‚é
+		changeScene(State::Title, 0.3s);
+	}
+
 }
 
 void Plot::draw() const {
