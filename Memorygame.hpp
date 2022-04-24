@@ -1,36 +1,46 @@
 #pragma once
 #include "Common.hpp"
-#include "InputNumberButton.hpp"
-#include <HamFramework.hpp>
-#include <random>
-#include <fstream>
-#include <stdio.h>
 
-class Memorygame : public MyApp::Scene
-{
-private:
-	const PlayingCard::Pack pack = PlayingCard::Pack(69, Palette::Red);
-	Array<PlayingCard::Card> cards;
-	Array<InputNumberButton> buttons;
-	Array<RectF> rects;
-	int roop;
-	String text;
-	int savei[3];
-	bool gameResult[60];
-	Array<Vec2> cardData;
-	int count = 0;//開いているカードのカウント
-	int time = 0;
-
+class MemoryGame : public MyApp::Scene {
 public:
+	MemoryGame(const InitData& init);
+	~MemoryGame();
 
-	Memorygame(const InitData& init);
 	void update() override;
 	void draw() const override;
-	Array<PlayingCard::Card> hinduShuffle(Array<PlayingCard::Card> cards, int roop = 0);
-	Array<PlayingCard::Card> farrowShuffle(Array<PlayingCard::Card> cards, int roop = 0);
-	std::random_device seed_gen;
-	std::default_random_engine engine = std::default_random_engine(seed_gen());
-	//Array<PlayingCard::Card> setCards();
-	void setCards();
+	void cardsDraw() const;
 
+	void probabilityCal(int roop, CardDeck* cards);
+
+private:
+	CardDeck* cards;
+
+	bool gameResult[60];
+	Array<RectF> backrects;
+	Effect titleEffect;
+
+	Grid<int> grid;
+	Array<int> canSlelctCards;
+	int cardCount = 0;
+	int saveOpenCard[3];
+	int saveIndex[3];
+	bool turn = true;
+	bool turnStart = true;
+	int firstdorwcard;
+	int max;
+	
+};
+
+struct TurnEffect : IEffect {
+	Vec2 m_start;
+
+	String m_text;
+
+	Font m_font;
+
+
+
+	TurnEffect(const Vec2& start, String text, const Font& font);
+
+	bool update(double t) override;
 };

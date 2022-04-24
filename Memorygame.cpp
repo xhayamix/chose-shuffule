@@ -1,154 +1,256 @@
-#include "Memorygame.hpp"
+#include "MemoryGame.hpp"
 
+MemoryGame::MemoryGame(const InitData& init) : IScene(init){
+	cards = getData().cards;
 
-Memorygame::Memorygame(const InitData& init) : IScene(init) {
-	setCards();
-	if (getData().shuffleKind == 0) {//シャッフルの種類選択
-		cards = hinduShuffle(cards, getData().roop);
-	} else {
-		cards = farrowShuffle(cards, getData().roop);
+	for (int i = 0; i < 60; i++) {
+		RectF rect(15 + i % 15 * (cards->pack.width() + 15), 15 + (i / 15) * (cards->pack.height() + 15), 69, 111.64435);
+		backrects.push_back(rect);
+		cards->setCard(i, cards->getCard(i).flip());
 	}
-	for (int i = 0; i < 60; i++) {//カードのあたり判定用の透明な図形の配置
-		RectF rect(15 + i % 15 * (pack.width() + 15), 15 + (i / 15) * (pack.height() + 15), 69, 111.64435);
-		rects.push_back(rect);
-	}
+
 	for (int i = 0; i < 60; i++) {//配列初期化
 		gameResult[i] = true;
+		canSlelctCards.push_back(i);
 	}
+	grid.resize(60, 20, 0);
+	probabilityCal(getData().roop, getData().procards);
 }
 
-void Memorygame::update() {
-	if (count == 3) {//count2の状態でdrowを呼び出すことで間違った場合でも2枚とも表示することができるようにしたが、ごり押し実装なのでもう少し改善したい
-		count++;
-	}
-	for (int i = 0; i < rects.size(); i++) {//クリックしたカードを表に向ける
-		if (rects[i].leftClicked() && gameResult[i] && count < 3) {
-			savei[count] = i;
-			gameResult[i] = false;
-			cards[i].flip();
-			count++;//開いたカードの枚数をカウントする
-			break;
+MemoryGame::~MemoryGame()
+{
+}
+
+void MemoryGame::update() {
+	titleEffect.update();
+	const Vec2 center(Scene::Center().x, 600);
+
+	if (turn) {
+		if (turnStart) {
+			turnStart = false;
+			titleEffect.add<TurnEffect>(center, U"Your Trun", FontAsset(U"Title"));
+
 		}
-	}
-	
-	if (count == 4) {
+
+		if (cardCount == 3) {//count2の状態でdrowを呼び出すことで間違った場合でも2枚とも表示することができるようにしたが、ごり押し実装なのでもう少し改善したい
+			cardCount++;
+		}
+		for (int i = 0; i < backrects.size(); i++) {//クリックしたカードを表に向ける
+			if (backrects[i].leftClicked() && gameResult[i] && cardCount < 3) {
+				saveOpenCard[cardCount] = i;
+				gameResult[i] = false;
+				cards->setCard(i, cards->getCard(i).flip());
+				cardCount++;//開いたカードの枚数をカウントする
+				break;
+			}
+		}
+
+		if (cardCount == 4) {
+			turn = false;
+
+			if (cards->getCard(saveOpenCard[0]).rank == cards->getCard(saveOpenCard[1]).rank && cards->getCard(saveOpenCard[0]).rank == cards->getCard(saveOpenCard[2]).rank) {//カードが一緒かどうか
+				turn = true;
+
+				static int num[3];
+				for (int i = 0; i < 3; i++) {
+					num[i] = saveOpenCard[i];
+				}
+				canSlelctCards.remove_if([](int32 n) { return n == num[0]; });
+				canSlelctCards.remove_if([](int32 n) { return n == num[1]; });
+				canSlelctCards.remove_if([](int32 n) { return n == num[2]; });
+
+			} else {
+
+				for (int i = 0; i < 3; i++) {
+					gameResult[saveOpenCard[i]] = true;
+				}
+				System::Sleep(2000);//カード表示時間
+				for (int i = 0; i < 3; i++) {
+					cards->setCard(saveOpenCard[i], cards->getCard(saveOpenCard[i]).flip());
+				}
+				turnStart = true;
+
+			}
+			cardCount = 0;
+
+		}
+
+	} else {
+		//Print << saveIndex;
+		if (turnStart) {
+			turnStart = false;
+			titleEffect.add<TurnEffect>(center, U"Enemy Trun", FontAsset(U"Title"));
+		}
+
+
+		if (cardCount == 3) {//count2の状態でdrowを呼び出すことで間違った場合でも2枚とも表示することができるようにしたが、ごり押し実装なのでもう少し改善したい
+			cardCount++;
+		}
 		
-		if (cards[savei[0]].rank == cards[savei[1]].rank && cards[savei[0]].rank == cards[savei[2]].rank) {//カードが一緒かどうか
+
+		if (cardCount == 0) {
+			for (int i = 0; i < canSlelctCards.size(); i++) {
+				for (int j = 0; j < 20; j++) {
+					max = std::max(grid[j][canSlelctCards[i]], max);
+				}
+			}
+
+			for (int i = 0; i < canSlelctCards.size(); i++) {
+				for (int j = 0; j < 20; j++) {
+					if (max == grid[j][canSlelctCards[i]]) {
+						saveIndex[cardCount] = i;
+						break;
+					}
+				}
+			}
+
+			saveOpenCard[cardCount] = canSlelctCards[saveIndex[cardCount]];
+			gameResult[canSlelctCards[saveIndex[cardCount]]] = false;
+			cards->setCard(canSlelctCards[saveIndex[cardCount]], cards->getCard(canSlelctCards[saveIndex[cardCount]]).flip());
+			cardCount++;//開いたカードの枚数をカウントする
+			System::Sleep(1000);
+		} else if (cardCount == 1) {
+			max = 0;
+			int num = cards->getIntCard(canSlelctCards[saveIndex[0]]);
+			for (int i = 0; i < canSlelctCards.size(); i++) {
+				if (i != saveIndex[0]) {
+					max = std::max(grid[num][canSlelctCards[i]], max);
+				}
+			}
+			//Print << num;
+			for (int i = 0; i < canSlelctCards.size(); i++) {
+				if (max == grid[num][canSlelctCards[i]] && i != saveIndex[0]) {
+					saveIndex[cardCount] = i;
+				}
+			}
+			saveOpenCard[cardCount] = canSlelctCards[saveIndex[cardCount]];
+			gameResult[canSlelctCards[saveIndex[cardCount]]] = false;
+			cards->setCard(canSlelctCards[saveIndex[cardCount]], cards->getCard(canSlelctCards[saveIndex[cardCount]]).flip());
+			cardCount++;//開いたカードの枚数をカウントする
+			System::Sleep(1000);
 			
-		} else {
+		} else if (cardCount == 2) {
+			max = 0;
+			int num = cards->getIntCard(canSlelctCards[saveIndex[0]]);
+			for (int i = 0; i < canSlelctCards.size(); i++) {
+				if (i != saveIndex[0] && i != saveIndex[1]) {
+					max = std::max(grid[num][canSlelctCards[i]], max);
+				}
+			}
+
+			for (int i = 0; i < canSlelctCards.size(); i++) {
+				if (max == grid[num][canSlelctCards[i]] && i != saveIndex[0] && i != saveIndex[1]) {
+					saveIndex[cardCount] = i;
+				}
+			}
+			saveOpenCard[cardCount] = canSlelctCards[saveIndex[cardCount]];
+			gameResult[canSlelctCards[saveIndex[cardCount]]] = false;
+			cards->setCard(canSlelctCards[saveIndex[cardCount]], cards->getCard(canSlelctCards[saveIndex[cardCount]]).flip());
+			cardCount++;//開いたカードの枚数をカウントする
+			System::Sleep(1000);
 			
-			gameResult[savei[0]] = true;
-			gameResult[savei[1]] = true;
-			gameResult[savei[2]] = true;
-			System::Sleep(2000);//カード表示時間
-			cards[savei[0]].flip();
-			cards[savei[1]].flip();
-			cards[savei[2]].flip();
-
 		}
-		count = 0;
 
-	}
-	if (MouseR.pressed()) {//titleに戻る
-		changeScene(State::Title, 0.3s);
-	}
-}
 
-void Memorygame::draw() const {
-	for (int i = 0; i < 60; i++) {//カードの描画
-		const Vec2 center(15 + i % 15 * (pack.width() + 15), 15 + (i / 15) * (pack.height() + 15));
-		pack(cards[i]).draw(center);
-	}
+		/*試作ai
+		if (cardCount == 0 || cardCount == 1 || cardCount == 2) {
+			saveOpenCard[cardCount] = canSlelctCards[cardCount];
+			gameResult[canSlelctCards[cardCount]] = false;
+			cards->setCard(canSlelctCards[cardCount], cards->getCard(canSlelctCards[cardCount]).flip());
+			cardCount++;//開いたカードの枚数をカウントする
+			System::Sleep(1000);
+		} else if (cardCount == 3) {
+			cardCount++;
+			System::Sleep(500);
+		}
 
-}
+		*/
+		
+		if (cardCount == 4) {
+			turn = true;
+			if (cards->getCard(saveOpenCard[0]).rank == cards->getCard(saveOpenCard[1]).rank && cards->getCard(saveOpenCard[0]).rank == cards->getCard(saveOpenCard[2]).rank) {
+				turn = false;
 
-Array<PlayingCard::Card> Memorygame::hinduShuffle(Array<PlayingCard::Card> cards, int roop) {
-	int count;
-	int now;
-	std::normal_distribution<> dist(10, 5 / 3);
-	Array<PlayingCard::Card> afterCards = cards.slice(0);
-	for (int i = 0; i < roop; i++) {
-		cards = afterCards.slice(0);
-		count = cards.size();
-		now = 0;
-		while (count > 0) {
-			int stack = (int)dist(engine);
-			for (int i = stack; i > 0; i--) {
-				if (now + i - 1 >= afterCards.size()) {
-					continue;
+				static int num[3];
+				for (int i = 0; i < 3; i++) {
+					num[i] = saveOpenCard[i];
 				}
-				afterCards[count - 1] = cards[now + i - 1];
-				count--;
-				if (count <= 0) {
-					break;
-				}
-			}
-			now += stack;
-		}
-	}
-	return afterCards;
+				canSlelctCards.remove_if([](int32 n) { return n == num[0]; });
+				canSlelctCards.remove_if([](int32 n) { return n == num[1]; });
+				canSlelctCards.remove_if([](int32 n) { return n == num[2]; });
 
-}
-Array<PlayingCard::Card> Memorygame::farrowShuffle(Array<PlayingCard::Card> cards, int roop) {
-	int acount;
-	int bcount;
-	int now;
-	Array<PlayingCard::Card> afterCards = cards.slice(0);
-	std::binomial_distribution<> dist(cards.size(), 0.5);
-	for (int j = 0; j < roop; j++) {
-		now = cards.size();
-		int div = dist(engine);
-		Array<PlayingCard::Card> a;
-		Array<PlayingCard::Card> b;
-		for (int i = 0; i < div; i++) {
-			a.push_back(afterCards[i]);
+			} else {
+				for (int i = 0; i < 3; i++) {
+					gameResult[saveOpenCard[i]] = true;
+				}
+				System::Sleep(2000);//カード表示時間
+				for (int i = 0; i < 3; i++) {
+					cards->setCard(saveOpenCard[i], cards->getCard(saveOpenCard[i]).flip());
+				}
+				turnStart = true;
+			}
+			cardCount = 0;
 		}
-		for (int i = 0; i < cards.size() - div; i++) {
-			b.push_back(afterCards[i + div]);
-		}
-		acount = div;
-		bcount = cards.size() - div;
 
-		while (acount > 0 || bcount > 0) {
-			if (acount == 0) {
-				for (int i = 0; i < bcount; i++) {
-					afterCards[i] = b[i];
-				}
-				break;
-			}
-			if (bcount == 0) {
-				for (int i = 0; i < acount; i++) {
-					afterCards[i] = a[i];
-				}
-				break;
-			}
-			double x = acount / (double)(acount + bcount);
-			if (x >= Random(0.0, 1.0)) {
-				afterCards[now - 1] = a[acount - 1];
-				now--;
-				acount--;
-			}
-			else {
-				afterCards[now - 1] = b[bcount - 1];
-				now--;
-				bcount--;
-			}
-		}
 	}
-	return afterCards;
 
 }
 
-void Memorygame::setCards() {//カードの初期セット
-	cards.clear();
-	cardData = getData().cards;
+void MemoryGame::draw() const {
+	cardsDraw();
+
+}
+
+void MemoryGame::cardsDraw() const {//カードの描画
 	for (int i = 0; i < 60; i++) {
-		if (cardData[i].y == 0) {
-			cards.push_back(PlayingCard::Card(PlayingCard::Suit::Spade, cardData[i].x, false));
-		}
-		else {
-			cards.push_back(PlayingCard::Card(PlayingCard::Suit::Diamond, cardData[i].x, false));
+		const Vec2 center(15 + i % 15 * (cards->pack.width() + 15), 15 + (i / 15) * (cards->pack.height() + 15));
+		cards->pack(cards->getCard(i)).draw(center);
+	}
+}
+
+void MemoryGame::probabilityCal(int roop, CardDeck* cards) {
+	CardDeck* copyCards = new CardDeck();
+	if (getData().shuffleKind == 0) {
+		CardShuffle* shuffle = new HinduShuffle();
+		copyCards->setShuffle(shuffle);
+	} else {
+		CardShuffle* shuffle = new FarrowShuffle();
+		copyCards->setShuffle(shuffle);
+	}
+	for (int i = 0; i < 1000; i++) {
+		copyCards->setIntCards(cards->getIntCards());
+		copyCards->doShuffle(roop);
+		for (int j = 0; j < 60; j++) {
+			
+			this->grid[copyCards->getIntCard(j)][j]++;
 		}
 	}
-
+	TextWriter writer(U"tutorial.txt");
+	if(!writer) {
+		throw Error(U"Failed to open `tutorial.txt`");
+	}
+	for(int i = 0; i < 20; i++) {
+		for (int j = 0; j < 60; j++) {
+			writer.write(grid[i][j]);
+			writer.write(U',');
+		}
+		writer.writeln(U',');
+	}
+	writer.close();
+	//Print << grid;
 }
+
+TurnEffect::TurnEffect(const Vec2& start, String text, const Font& font)
+		: m_start(start)
+		, m_text(text)
+		, m_font(font) {
+	}
+
+	bool TurnEffect::update(double t){
+		const HSV color(0, 100, 100, 1.0 - (t * 0.5));
+
+		m_font(m_text).drawAt(m_start, color);
+
+		// 0.5 秒以上経過で消滅
+		return t < 2;
+	}
