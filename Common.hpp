@@ -1,16 +1,18 @@
 #pragma once
 #include <Siv3D.hpp>
-enum class State{
+#include "CardDeck.hpp"
+
+enum class State {
 	Title,
-	Hindu,
-	Farrow,
 	SetGame,
-	Memorygame,
-	Plot
+	MemoryGame,
+	AgentSetGame,
+	AgentMemoryGame
 };
 
-struct CommonData{
-	Array<Vec2> cards;
+struct CommonData {
+	CardDeck* cards;
+	CardDeck* procards;
 	int roop = 0;
 	int shuffleKind = 0;
 
